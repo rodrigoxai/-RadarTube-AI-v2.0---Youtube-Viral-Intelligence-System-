@@ -5,6 +5,9 @@
 ![AI](https://img.shields.io/badge/AI-Mistral-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Active-brightgreen?style=for-the-badge)
 
+🌎 Language
+🇺🇸 English
+🇧🇷 Português
 
 **Find the top 20 videos in your niche and generate viral content using Artificial Intelligence.**
 
@@ -79,6 +82,8 @@ Feel free to open Issues and Pull Requests. Any help to improve the algorithm or
 Made with 💜 by RodrigoXai
 
 
+
+_______________________________________________________________________________________________________________________________________
 
 >> PT BR <<
 
