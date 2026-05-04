@@ -5,6 +5,9 @@
 ![AI](https://img.shields.io/badge/AI-Mistral-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Active-brightgreen?style=for-the-badge)
 
+🚀 Live Demo: https://rodrigoxai.github.io/-RadarTube-AI-v2.0---Youtube-Viral-Intelligence-System-/
+
+
 🌎 Language
 🇺🇸 English
 🇧🇷 Português
