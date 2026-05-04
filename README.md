@@ -51,7 +51,7 @@ You will need two free API keys:
 
 ### 2. Installation
 
-```bash
+bash
 git clone https://github.com/YOUR_USER/radartube.git
 cd radartube
 
