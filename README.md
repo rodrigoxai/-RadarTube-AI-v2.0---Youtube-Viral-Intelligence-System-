@@ -5,6 +5,95 @@
 ![AI](https://img.shields.io/badge/AI-Mistral-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Active-brightgreen?style=for-the-badge)
 
+# 📡 RadarTube AI — YouTube Viral Intelligence System
+
+**Find the top 20 videos in your niche and generate viral content using Artificial Intelligence.**
+
+---
+
+## 🚀 About the Project
+
+RadarTube AI is an intelligence tool for content creators that analyzes the YouTube algorithm in real time. It doesn’t just show trends — it calculates a **Viral Score** based on growth speed, engagement, freshness, and audience quality, helping you ride the wave before everyone else.
+
+---
+
+## ✨ Main Features
+
+- 🔍 **Viral Radar**: Scans the 50 most relevant videos in a niche and ranks the top 20.
+- 📊 **Exclusive Viral Score** based on:
+  - ⚡ Speed: Views per hour (explosive growth)
+  - 💬 Engagement: Real audience interaction
+  - 🕐 Freshness: Bonus for recent content (48h window)
+  - 📈 Ratio: Audience quality vs. clicks
+- 🤖 **AI Content Generator**: Hooks, scripts, captions, and hashtags powered by Mistral AI
+- 🔄 **Real-time Monitoring**: Auto-refresh so you never miss a trend
+- 🌗 **Futuristic Interface**: Responsive dark mode for Desktop and Mobile
+
+---
+
+## 🛠️ Technologies Used
+
+- Frontend: HTML5, CSS3, JavaScript (ES6+)
+- APIs:
+  - YouTube Data API v3
+  - Mistral AI (Small Latest model)
+- Architecture: Lightweight Single Page Application (SPA), no complex backend required
+
+---
+
+## 📦 How to Use
+
+### 1. Requirements
+
+You will need two free API keys:
+
+- YouTube Data API Key (Google Cloud Console)
+- Mistral API Key (Mistral AI)
+
+### 2. Installation
+
+```bash
+git clone https://github.com/YOUR_USER/radartube.git
+cd radartube
+
+3. Run
+
+Open radartube.html in your browser.
+
+4. Configuration
+Click the ⚙️ APIs button
+Paste your keys
+Click SCAN
+🧠 Understanding the Viral Score
+Metric	Weight	Description
+⚡ Speed	35%	Detects fast-growing videos
+💬 Engagement	30%	(Likes + 2× Comments) / Views
+📈 Ratio	20%	Audience quality vs. clickbait
+🕐 Freshness	15%	YouTube favors new content
+
+💡 Pro Tip: Sort by Speed to see what’s exploding now, or by Engagement to learn what audiences love.
+
+*## 📸 Screenshots
+
+### Home
+![Home](screenshots/home.png)
+
+### Guia
+![Guia](screenshots/guia.png)
+
+### Estratégia
+![Estrategia](screenshots/estrategia.png)
+
+### API
+![API](screenshots/api.png)
+
+## 🤝 Contributing
+Feel free to open Issues and Pull Requests. Any help to improve the algorithm or the interface is welcome!
+
+## 📄 License
+Made with 💜 by RodrigoXai
+
+
 > **Encontre os 20 melhores vídeos do seu nicho e gere conteúdo viral com Inteligência Artificial.**
 
 ## 🚀 Sobre o Projeto
