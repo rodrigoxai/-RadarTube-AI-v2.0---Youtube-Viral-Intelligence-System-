@@ -73,13 +73,13 @@ O RadarTube usa uma fórmula ponderada para classificar os vídeos:
 ![Home](screenshots/home.png)
 
 ### Guia
-![Dashboard](screenshots/guia.png)
+![Guia](screenshots/guia.png)
 
 ### Estratégia
-![Resultado](screenshots/estratégia.png)*
+![Estrategia](screenshots/estrategia.png)
 
 ### API
-![Resultado](screenshots/api.png)*
+![API](screenshots/api.png)
 
 
 ## 🤝 Contribuindo
