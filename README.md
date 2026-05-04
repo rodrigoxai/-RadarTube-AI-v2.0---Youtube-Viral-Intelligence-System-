@@ -72,26 +72,15 @@ Metric	Weight	Description
 
 💡 Pro Tip: Sort by Speed to see what’s exploding now, or by Engagement to learn what audiences love.
 
-*## 📸 Screenshots
-
-### Home
-![Home](screenshots/home.png)
-
-### Guia
-![Guia](screenshots/guia.png)
-
-### Estratégia
-![Estrategia](screenshots/estrategia.png)
-
-### API
-![API](screenshots/api.png)
-
 ## 🤝 Contributing
 Feel free to open Issues and Pull Requests. Any help to improve the algorithm or the interface is welcome!
 
 ## 📄 License
 Made with 💜 by RodrigoXai
 
+
+
+>> PT BR <<
 
 > **Encontre os 20 melhores vídeos do seu nicho e gere conteúdo viral com Inteligência Artificial.**
 
