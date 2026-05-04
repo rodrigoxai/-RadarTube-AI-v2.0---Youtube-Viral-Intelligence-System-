@@ -67,7 +67,20 @@ O RadarTube usa uma fórmula ponderada para classificar os vídeos:
 > 💡 **Dica Pro:** Ordene por **Velocidade** para ver o que está bombando *agora*, ou por **Engajamento** para entender qual *tipo* de conteúdo o público mais gosta.
 
 ## 📸 Screenshots
-*(Adicione capturas de tela da ferramenta aqui para ilustrar o README)*
+*## 📸 Screenshots
+
+### Home
+![Home](screenshots/home.png)
+
+### Guia
+![Dashboard](screenshots/guia.png)
+
+### Estratégia
+![Resultado](screenshots/estratégia.png)*
+
+### API
+![Resultado](screenshots/api.png)*
+
 
 ## 🤝 Contribuindo
 Sinta-se livre para abrir Issues e Pull Requests. Toda ajuda para melhorar o algoritmo ou a interface é bem-vinda!
