@@ -73,8 +73,4 @@ O RadarTube usa uma fórmula ponderada para classificar os vídeos:
 Sinta-se livre para abrir Issues e Pull Requests. Toda ajuda para melhorar o algoritmo ou a interface é bem-vinda!
 
 ## 📄 Licença
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
----
-
-Feito com 💜 e Inteligência Artificial por **[Seu Nome/Apelido]**
+Feito com 💜 por RodrigoXai
