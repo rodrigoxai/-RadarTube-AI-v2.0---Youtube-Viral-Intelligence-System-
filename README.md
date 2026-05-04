@@ -5,7 +5,6 @@
 ![AI](https://img.shields.io/badge/AI-Mistral-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Active-brightgreen?style=for-the-badge)
 
-# 📡 RadarTube AI — YouTube Viral Intelligence System
 
 **Find the top 20 videos in your niche and generate viral content using Artificial Intelligence.**
 
