@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadarTube AI | Radar Viral do YouTube</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple: #7c3aed;
+            --purple-light: #a78bfa;
+            --purple-dark: #5b21b6;
+            --cyan: #06b6d4;
+            --cyan-light: #67e8f9;
+            --pink: #ec4899;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --green: #10b981;
+            --bg: #0a0a0f;
+            --bg-light: #1a1a2e;
+            --bg-card: rgba(26, 26, 46, 0.6);
+            --gray: #6b7280;
+            --gray-light: #9ca3af;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(124, 58, 237, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .scan-line {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon { font-size: 2.5rem; }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--gray);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        .live-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-dot {
+            width: 8px; height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+            animation: livePulse 1.5s infinite;
+        }
+
+        @keyframes livePulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .live-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        /* Main */
+        .main {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 2rem 0 2rem;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, var(--purple-light), var(--pink), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            color: var(--gray-light);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Settings */
+        .settings-toggle { text-align: center; margin-bottom: 0.5rem; }
+
+        .settings-btn {
+            background: none;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+            margin: 0 0.3rem;
+        }
+
+        .settings-btn:hover { border-color: var(--purple); color: var(--purple); }
+        .settings-btn.active { border-color: var(--purple); color: var(--purple); background: rgba(124, 58, 237, 0.1); }
+
+        .settings-panel {
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            background: var(--bg-light);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .settings-panel.show { display: block; }
+
+        .settings-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .settings-field { flex: 1; min-width: 250px; }
+        .settings-label { font-size: 0.75rem; color: var(--gray); font-family: 'JetBrains Mono', monospace; margin-bottom: 0.5rem; }
+
+        .settings-input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            color: var(--white);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        .settings-input:focus { border-color: var(--purple); }
+
+        /* Search */
+        .search-section { max-width: 700px; margin: 0 auto 2rem; }
+        .search-row { display: flex; gap: 0.8rem; }
+
+        .search-input {
+            flex: 1;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            color: var(--white);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus { border-color: var(--purple); box-shadow: 0 0 20px rgba(124, 58, 237, 0.2); }
+        .search-input::placeholder { color: var(--gray); }
+
+        .btn-scan {
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-scan:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4); }
+        .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* How it Works */
+        .info-panel {
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            background: var(--bg-light);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .info-panel.show { display: block; }
+
+        .info-panel-header {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.1));
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-panel-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--purple-light); }
+        .info-panel-body { padding: 1.5rem; }
+
+        .metric-explain {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: var(--bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.2rem;
+        }
+
+        .metric-card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .metric-card-name { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .metric-card-name.purple { color: var(--purple-light); }
+        .metric-card-name.cyan { color: var(--cyan); }
+        .metric-card-name.pink { color: var(--pink); }
+        .metric-card-name.yellow { color: var(--yellow); }
+        .metric-card-weight { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--gray); margin-bottom: 0.5rem; }
+        .metric-card-desc { font-size: 0.8rem; color: var(--gray-light); line-height: 1.5; }
+
+        .tip-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .tip-box-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-box p { font-size: 0.85rem; color: var(--gray-light); line-height: 1.6; margin-bottom: 0.3rem; }
+
+        /* Sort Buttons */
+        .sort-bar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .sort-btn {
+            background: var(--bg-light);
+            border: 1px solid var(--gray);
+            color: var(--gray-light);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .sort-btn:hover { border-color: var(--purple); color: var(--purple); }
+        .sort-btn.active { border-color: var(--purple); color: var(--white); background: var(--purple); }
+
+        /* Auto-refresh */
+        .autorefresh-bar {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .autorefresh-info {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .autorefresh-info span { color: var(--cyan); }
+
+        /* Loading */
+        .loading-section {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(26, 26, 46, 0.3);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .loading-section.show { display: block; }
+
+        .loading-dots { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
+
+        .loading-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            animation: loadBounce 1.4s infinite;
+        }
+
+        .loading-dot:nth-child(1) { background: var(--purple); }
+        .loading-dot:nth-child(2) { background: var(--cyan); animation-delay: 0.2s; }
+        .loading-dot:nth-child(3) { background: var(--pink); animation-delay: 0.4s; }
+
+        @keyframes loadBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .loading-text { font-family: 'JetBrains Mono', monospace; color: var(--purple-light); font-size: 1rem; }
+
+        .loading-bar {
+            margin-top: 1rem;
+            height: 3px;
+            background: var(--bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Error */
+        .error-section {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            color: var(--red);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .error-section.show { display: block; }
+
+        /* Results */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .results-title { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--purple-light); }
+        .results-count { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--gray); }
+
+        /* Video Card */
+        .video-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .video-card:hover {
+            border-color: rgba(124, 58, 237, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.1);
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-row { display: flex; gap: 1.2rem; align-items: flex-start; }
+
+        .card-rank {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gray);
+            min-width: 3rem;
+            text-align: center;
+            padding-top: 0.5rem;
+        }
+
+        .card-thumb {
+            width: 160px;
+            height: 90px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg);
+            flex-shrink: 0;
+        }
+
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        .card-content { flex: 1; min-width: 0; }
+        .card-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-channel { font-size: 0.85rem; color: var(--gray-light); margin-bottom: 0.5rem; }
+
+        .card-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gray);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Score Section */
+        .score-section { display: flex; align-items: center; gap: 1rem; }
+
+        .progress-bar { flex: 1; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+
+        .progress-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 1.5s ease; }
+
+        .progress-low { background: linear-gradient(90deg, #6b7280, #9ca3af); }
+        .progress-medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .progress-high { background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981); box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+
+        .score-value { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700; min-width: 3.5rem; text-align: right; }
+
+        .badge { font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-top: 0.3rem; }
+
+        .badge-high { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+        .badge-medium { background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
+        .badge-low { background: rgba(107, 114, 128, 0.2); border: 1px solid rgba(107, 114, 128, 0.4); color: #d1d5db; }
+
+        /* Breakdown */
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            font-size: 0.7rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .breakdown-item { color: var(--gray); }
+        .breakdown-item span { font-weight: 600; }
+        .breakdown-velocity span { color: var(--purple-light); }
+        .breakdown-engagement span { color: var(--cyan); }
+        .breakdown-freshness span { color: var(--pink); }
+        .breakdown-ratio span { color: var(--yellow); }
+
+        /* Mini bars in breakdown */
+        .mini-bar-bg {
+            height: 3px;
+            background: var(--bg);
+            border-radius: 2px;
+            margin-top: 0.3rem;
+            overflow: hidden;
+        }
+
+        .mini-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        .mini-bar-purple { background: var(--purple-light); }
+        .mini-bar-cyan { background: var(--cyan); }
+        .mini-bar-pink { background: var(--pink); }
+        .mini-bar-yellow { background: var(--yellow); }
+
+        /* Card Actions */
+        .card-actions { display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; }
+
+        .btn-watch {
+            padding: 0.6rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            color: var(--gray-light);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-watch:hover { border-color: var(--white); color: var(--white); }
+
+        .btn-generate {
+            padding: 0.6rem 1rem;
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-generate:hover { box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4); }
+
+        /* Explanation */
+        .info-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--gray);
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .info-toggle:hover { color: var(--purple-light); }
+
+        .card-explanation {
+            display: none;
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(124, 58, 237, 0.05);
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            color: var(--gray-light);
+        }
+
+        .card-explanation.show { display: block; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: var(--bg-light);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-title { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; background: linear-gradient(135deg, var(--purple-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .modal-close { background: none; border: none; color: var(--gray); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        .modal-close:hover { color: var(--white); }
+
+        .content-block { background: rgba(10, 10, 15, 0.5); border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; }
+        .content-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .content-block-title { font-size: 0.8rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .btn-copy {
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            color: var(--purple-light);
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-copy:hover { background: var(--purple); color: var(--white); }
+        .content-block p { font-size: 0.95rem; line-height: 1.6; color: var(--gray-light); }
+
+        .hashtags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .hashtag { font-size: 0.75rem; background: rgba(124, 58, 237, 0.2); color: var(--purple-light); padding: 0.3rem 0.7rem; border-radius: 50px; }
+
+        .best-time {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.1));
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .best-time-label { font-size: 0.8rem; font-weight: 700; color: var(--white); margin-bottom: 0.3rem; }
+        .best-time-value { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--cyan); }
+
+        /* Loading Modal */
+        .modal-loading { text-align: center; padding: 3rem; }
+        .modal-loading-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .modal-loading-text { font-family: 'JetBrains Mono', monospace; color: var(--purple-light); animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Empty */
+        .empty-state { text-align: center; padding: 4rem 2rem; }
+        .empty-icon { font-size: 4rem; margin-bottom: 1rem; animation: floatAnim 3s ease-in-out infinite; }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .empty-title { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--gray); margin-bottom: 0.5rem; }
+        .empty-text { color: var(--gray); }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 10;
+            border-top: 1px solid rgba(124, 58, 237, 0.1);
+            padding: 1.5rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-row { flex-direction: column; }
+            .card-row { flex-wrap: wrap; }
+            .card-thumb { width: 100%; height: 150px; }
+            .card-actions { flex-direction: row; width: 100%; margin-top: 1rem; }
+            .card-actions > * { flex: 1; }
+            .breakdown { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 1.8rem; }
+            .metric-explain { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .main { padding: 1rem; }
+            .video-card { padding: 1rem; }
+            .score-section { flex-direction: column; align-items: stretch; }
+            .score-value { text-align: left; }
+            .modal { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="scan-line"></div>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo-section">
+                <span class="logo-icon">📡</span>
+                <div>
+                    <div class="logo-text">RADARTUBE AI</div>
+                    <div class="logo-sub">RADAR VIRAL DO YOUTUBE</div>
+                </div>
+            </div>
+            <div class="live-section">
+                <div class="live-dot"></div>
+                <span class="live-text">AO VIVO</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <h1 class="hero-title">Os 20 MELHORES Vídeos do Nicho</h1>
+            <p class="hero-subtitle">Ranking atualizado: do vídeo que está BOMBANDO até as melhores oportunidades do nicho</p>
+        </section>
+
+        <div class="settings-toggle">
+            <button class="settings-btn" onclick="toggleSettings()">⚙️ APIs</button>
+            <button class="settings-btn" onclick="toggleInfoPanel()">📊 Como Usar</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-row">
+                <div class="settings-field">
+                    <div class="settings-label">YouTube API Key</div>
+                    <input type="text" class="settings-input" id="ytKey" placeholder="Cole sua chave aqui...">
+                </div>
+                <div class="settings-field">
+                    <div class="settings-label">Mistral API Key</div>
+                    <input type="text" class="settings-input" id="mistralKey" placeholder="Cole sua chave aqui...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Panel - Como usar -->
+        <div class="info-panel" id="infoPanel">
+            <div class="info-panel-header" onclick="toggleInfoPanel()">
+                <span class="info-panel-title">📖 Guia Completo — Como Usar o RadarTube</span>
+                <span id="infoToggleIcon">▲</span>
+            </div>
+            <div class="info-panel-body">
+                <div class="metric-explain">
+                    <div class="metric-card">
+                        <div class="metric-card-icon">⚡</div>
+                        <div class="metric-card-name purple">VELOCIDADE</div>
+                        <div class="metric-card-weight">Peso: 35% do score</div>
+                        <div class="metric-card-desc">Mede views por hora. Um vídeo com 500K views em 5h é mais viral que um com 1M em 30 dias. <strong>Use:</strong> Ordene por Velocidade para pegar trends que estão BOMBANDO AGORA.</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card-icon">💬</div>
+                        <div class="metric-card-name cyan">ENGAJAMENTO</div>
+                        <div class="metric-card-weight">Peso: 30% do score</div>
+                        <div class="metric-card-desc">Likes + comentários (em dobro) ÷ views. Comentários valem mais pois geram discussão. <strong>Use:</strong> Ordene por Engajamento para ver que conteúdo gera mais interação — perfeito para copiar a fórmula.</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card-icon">🕐</div>
+                        <div class="metric-card-name pink">ATUALIDADE</div>
+                        <div class="metric-card-weight">Peso: 15% do score</div>
+                        <div class="metric-card-desc">O YouTube dá boost nas primeiras 48h. Quanto mais novo, maior o score. <strong>Use:</strong> Ordene por Atualidade para pegar conteúdo fresco e surfar na onda antes dos outros.</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card-icon">📈</div>
+                        <div class="metric-card-name yellow">PROPORÇÃO</div>
+                        <div class="metric-card-weight">Peso: 20% do score</div>
+                        <div class="metric-card-desc">Ratio de likes/comments por view. Indica qualidade real, não clickbait. <strong>Use:</strong> Ordene por Proporção para achar vídeos com público realmente fiel e engajado.</div>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">🚀 ESTRATÉGIA PARA USAR A SEU FAVOR</div>
+                    <p><strong>1.</strong> Digite seu nicho e clique "ESCANEAR" — o radar busca os vídeos e monta um <strong>Ranking dos Top 20 Melhores</strong> (do mais viral para o menos viral).</p>
+                    <p><strong>2.</strong> Use os botões de ordenação no topo para ver o melhor de cada métrica:</p>
+                    <p>• 🔥 <strong>Score Geral</strong> — os vídeos com maior potencial viral overall</p>
+                    <p>• ⚡ <strong>Velocidade</strong> — os que estão crescendo mais rápido AGORA</p>
+                    <p>• 💬 <strong>Engajamento</strong> — os que geram mais likes/comentários</p>
+                    <p>• 🕐 <strong>Atualidade</strong> — os mais recentes e frescos</p>
+                    <p>• 📈 <strong>Proporção</strong> — os com melhor qualidade de audiência</p>
+                    <p><strong>3.</strong> Clique em "💡 Por que esse score?" em qualquer card para entender a análise individual.</p>
+                    <p><strong>4.</strong> Clique em "🤖 Gerar Conteúdo" para a IA criar gancho, roteiro, legenda e hashtags para você.</p>
+                    <p><strong>5.</strong> Ative a <strong>atualização automática</strong> (botão 🔄) para os dados se renovarem sozinhos a cada 30 segundos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-section">
+            <div class="search-row">
+                <input type="text" class="search-input" id="keywordInput" placeholder="Digite o nicho (ex: IA, fitness, games, finanças...)" onkeydown="if(event.key==='Enter')scanTrends()">
+                <button class="btn-scan" id="scanBtn" onclick="scanTrends()">🚀 ESCANEAR</button>
+            </div>
+        </div>
+
+        <!-- Sort Bar -->
+        <div class="sort-bar" id="sortBar" style="display:none;">
+            <button class="sort-btn active" onclick="sortBy('score')">🔥 Score Geral</button>
+            <button class="sort-btn" onclick="sortBy('velocity')">⚡ Velocidade</button>
+            <button class="sort-btn" onclick="sortBy('engagement')">💬 Engajamento</button>
+            <button class="sort-btn" onclick="sortBy('freshness')">🕐 Atualidade</button>
+            <button class="sort-btn" onclick="sortBy('ratio')">📈 Proporção</button>
+        </div>
+
+        <!-- Auto Refresh -->
+        <div class="autorefresh-bar" id="autoRefreshBar" style="display:none;">
+            <button class="settings-btn" id="autoRefreshBtn" onclick="toggleAutoRefresh()">🔄 Auto-atualizar: OFF</button>
+            <span class="autorefresh-info" id="refreshTimer"></span>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-section" id="loadingSection">
+            <div class="loading-dots">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+            <div class="loading-text" id="loadingText">Inicializando...</div>
+            <div class="loading-bar">
+                <div class="loading-bar-fill" id="loadingBar"></div>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-section" id="errorSection"></div>
+
+        <!-- Results -->
+        <div id="resultsSection" style="display:none;">
+            <div class="results-header">
+                <span class="results-title" id="resultsTitle">📊 Top 20 Trends</span>
+                <span class="results-count" id="resultsSortLabel">ORDENADO POR: SCORE GERAL ↓</span>
+            </div>
+            <div id="videoList"></div>
+        </div>
+
+        <!-- Empty -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">📡</div>
+            <div class="empty-title">Pronto para Escanear</div>
+            <div class="empty-text">Digite um nicho e clique em Escanear para ver o Ranking dos Top 20</div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">🤖 Gerador de Conteúdo com IA</div>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <footer class="footer">RADARTUBE AI v2.0 • RADAR VIRAL DO YOUTUBE • 2026</footer>
+
+    <script>
+        const scanMessages = [
+            'Inicializando radar...',
+            'Buscando vídeos do nicho...',
+            'Analisando velocidade de views...',
+            'Calculando taxa de engajamento...',
+            'Verificando data de publicação...',
+            'Computando proporções...',
+            'Gerando ranking dos TOP 20...',
+            'Radar completo!'
+        ];
+
+        let allVideos = [];
+        let currentSort = 'score';
+        let autoRefresh = false;
+        let autoRefreshInterval = null;
+        let refreshCountdown = null;
+
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('show');
+        }
+
+        function toggleInfoPanel() {
+            const panel = document.getElementById('infoPanel');
+            const icon = document.getElementById('infoToggleIcon');
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+                icon.textContent = '▼';
+            } else {
+                panel.classList.add('show');
+                icon.textContent = '▲';
+            }
+        }
+
+        function getYTKey() { return document.getElementById('ytKey').value.trim(); }
+        function getMistralKey() { return document.getElementById('mistralKey').value.trim(); }
+        function formatNumber(num) { if (num >= 1e6) return (num/1e6).toFixed(1)+'M'; if (num >= 1e3) return (num/1e3).toFixed(1)+'K'; return num.toString(); }
+
+        function horasAtras(dateStr) {
+            const h = (Date.now() - new Date(dateStr).getTime()) / 36e5;
+            if (h < 1) return '< 1h atrás';
+            if (h < 24) return Math.round(h) + 'h atrás';
+            return Math.round(h/24) + 'd atrás';
+        }
+
+        function calcViralScore(views, likes, comments, publishedAt) {
+            try {
+                const hours = Math.max((Date.now() - new Date(publishedAt).getTime()) / 36e5, 0.1);
+                const vph = views / hours;
+                const vel = Math.min(vph / 5000, 1) * 100;
+                const eng = views > 0 ? ((likes + comments * 2) / views) * 100 : 0;
+                const engScore = Math.min(eng / 15, 1) * 100;
+                const fresh = Math.max(0, 100 - hours * 0.5);
+                const lRatio = views > 0 ? likes / views : 0;
+                const cRatio = views > 0 ? comments / views : 0;
+                const ratio = Math.min((lRatio * 5000 + cRatio * 10000) / 2, 1) * 100;
+                const raw = vel * 0.35 + engScore * 0.30 + fresh * 0.15 + ratio * 0.20;
+                return {
+                    percentage: Math.round(Math.min(Math.max(raw, 0), 100)),
+                    level: raw >= 75 ? 'HIGH' : raw >= 40 ? 'MEDIUM' : 'LOW',
+                    breakdown: {
+                        velocity: Math.round(vel),
+                        engagement: Math.round(engScore),
+                        freshness: Math.round(fresh),
+                        ratio: Math.round(ratio)
+                    },
+                    raw: { velocity: vph, engagement: eng, hours: hours }
+                };
+            } catch { return { percentage: 0, level: 'LOW', breakdown: { velocity: 0, engagement: 0, freshness: 0, ratio: 0 }, raw: { velocity: 0, engagement: 0, hours: 999 } }; }
+        }
+
+        async function scanTrends() {
+            const keyword = document.getElementById('keywordInput').value.trim();
+            if (!keyword) return;
+
+            // Validação das Chaves de API
+            if (!getYTKey() || !getMistralKey()) {
+                const errorSection = document.getElementById('errorSection');
+                errorSection.textContent = '⚠️ Configuração necessária: Clique em "⚙️ APIs" no topo e insira suas chaves do YouTube e Mistral AI para continuar.';
+                errorSection.classList.add('show');
+                return;
+            }
+
+            const loading = document.getElementById('loadingSection');
+            const loadingText = document.getElementById('loadingText');
+            const loadingBar = document.getElementById('loadingBar');
+            const errorSection = document.getElementById('errorSection');
+            const results = document.getElementById('resultsSection');
+            const empty = document.getElementById('emptyState');
+            const btn = document.getElementById('scanBtn');
+
+            loading.classList.add('show');
+            errorSection.classList.remove('show');
+            results.style.display = 'none';
+            empty.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = '🔍 ESCANEANDO...';
+
+            for (let i = 0; i < scanMessages.length; i++) {
+                await new Promise(r => setTimeout(r, 350 + Math.random() * 250));
+                loadingText.textContent = scanMessages[i];
+                loadingBar.style.width = ((i+1) / scanMessages.length * 100) + '%';
+            }
+
+            try {
+                const apiKey = getYTKey();
+                // Busca 50 vídeos para filtrar e pegar só os TOP 20 melhores
+                const searchRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(keyword)}&type=video&maxResults=50&key=${apiKey}&order=relevance`);
+                if (!searchRes.ok) {
+                    const err = await searchRes.json().catch(() => ({}));
+                    throw new Error(err.error?.message || 'Erro na API do YouTube');
+                }
+                const searchData = await searchRes.json();
+                if (!searchData.items?.length) throw new Error('Nenhum vídeo encontrado');
+
+                const ids = searchData.items.map(i => i.id.videoId).filter(Boolean).join(',');
+                const statsRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${ids}&key=${apiKey}`);
+                if (!statsRes.ok) throw new Error('Erro ao buscar estatísticas');
+                const statsData = await statsRes.json();
+
+                allVideos = statsData.items.map(item => {
+                    const vs = calcViralScore(
+                        parseInt(item.statistics.viewCount || '0'),
+                        parseInt(item.statistics.likeCount || '0'),
+                        parseInt(item.statistics.commentCount || '0'),
+                        item.snippet.publishedAt
+                    );
+                    return {
+                        id: item.id,
+                        title: item.snippet.title,
+                        channel: item.snippet.channelTitle,
+                        publishedAt: item.snippet.publishedAt,
+                        views: parseInt(item.statistics.viewCount || '0'),
+                        likes: parseInt(item.statistics.likeCount || '0'),
+                        comments: parseInt(item.statistics.commentCount || '0'),
+                        thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url,
+                        viralScore: vs
+                    };
+                }).filter(v => v.views > 0); // Remove apenas inválidos, mostra o ranking dos melhores
+
+                // Ordena por score e pega só os TOP 20 (do melhor para o pior)
+                allVideos.sort((a, b) => b.viralScore.percentage - a.viralScore.percentage);
+                allVideos = allVideos.slice(0, 20);
+
+                sortBy('score');
+                document.getElementById('sortBar').style.display = 'flex';
+                document.getElementById('autoRefreshBar').style.display = 'block';
+                results.style.display = 'block';
+                document.getElementById('resultsTitle').textContent = `📊 Top ${allVideos.length} Trends`;
+            } catch (err) {
+                errorSection.textContent = '⚠️ ' + err.message;
+                errorSection.classList.add('show');
+                empty.style.display = 'block';
+            } finally {
+                loading.classList.remove('show');
+                btn.disabled = false;
+                btn.textContent = '🚀 ESCANEAR';
+            }
+        }
+
+        const sortLabels = {
+            score: 'SCORE GERAL',
+            velocity: 'VELOCIDADE',
+            engagement: 'ENGAJAMENTO',
+            freshness: 'ATUALIDADE',
+            ratio: 'PROPORÇÃO'
+        };
+
+        function sortBy(type) {
+            currentSort = type;
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            event?.target?.classList?.add('active');
+
+            const sorted = [...allVideos].sort((a, b) => {
+                switch(type) {
+                    case 'velocity': return b.viralScore.breakdown.velocity - a.viralScore.breakdown.velocity;
+                    case 'engagement': return b.viralScore.breakdown.engagement - a.viralScore.breakdown.engagement;
+                    case 'freshness': return b.viralScore.breakdown.freshness - a.viralScore.breakdown.freshness;
+                    case 'ratio': return b.viralScore.breakdown.ratio - a.viralScore.breakdown.ratio;
+                    default: return b.viralScore.percentage - a.viralScore.percentage;
+                }
+            });
+
+            renderVideos(sorted);
+            document.getElementById('resultsSortLabel').textContent = `ORDENADO POR: ${sortLabels[type]} ↓`;
+        }
+
+        function renderVideos(videos) {
+            const list = document.getElementById('videoList');
+            list.innerHTML = '';
+
+            videos.forEach((v, i) => {
+                const s = v.viralScore;
+                const barClass = s.level === 'HIGH' ? 'progress-high' : s.level === 'MEDIUM' ? 'progress-medium' : 'progress-low';
+                const badgeClass = s.level === 'HIGH' ? 'badge-high' : s.level === 'MEDIUM' ? 'badge-medium' : 'badge-low';
+                const badgeText = s.level === 'HIGH' ? '🔥 ALTO POTENCIAL VIRAL' : s.level === 'MEDIUM' ? '⚠️ POTENCIAL MÉDIO' : '❌ BAIXO POTENCIAL';
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.style.animationDelay = `${i * 0.05}s`;
+
+                card.innerHTML = `
+                    <div class="card-row">
+                        <div class="card-rank">#${i + 1}</div>
+                        <div class="card-thumb">
+                            <img src="${v.thumbnail}" alt="" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 90%22><rect fill=%22%231a1a2e%22 width=%22160%22 height=%2290%22/><text x=%2280%22 y=%2245%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2210%22>Sem Imagem</text></svg>'">
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">${v.title}</div>
+                            <div class="card-channel">${v.channel} • ${horasAtras(v.publishedAt)}</div>
+                            <div class="card-stats">
+                                <span>👁 ${formatNumber(v.views)}</span>
+                                <span>❤️ ${formatNumber(v.likes)}</span>
+                                <span>💬 ${formatNumber(v.comments)}</span>
+                            </div>
+                            <div class="score-section">
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${barClass}" id="bar-${v.id}"></div>
+                                </div>
+                                <div class="score-value" style="color: ${s.level === 'HIGH' ? '#ef4444' : s.level === 'MEDIUM' ? '#f59e0b' : '#6b7280'}">${s.percentage}%</div>
+                            </div>
+                            <span class="badge ${badgeClass}">${badgeText}</span>
+                            <div class="breakdown">
+                                <div class="breakdown-item breakdown-velocity">⚡ VELOCIDADE <span>${s.breakdown.velocity}%</span><div class="mini-bar-bg"><div class="mini-bar-fill mini-bar-purple" style="width:${s.breakdown.velocity}%"></div></div></div>
+                                <div class="breakdown-item breakdown-engagement">💬 ENGAJAMENTO <span>${s.breakdown.engagement}%</span><div class="mini-bar-bg"><div class="mini-bar-fill mini-bar-cyan" style="width:${s.breakdown.engagement}%"></div></div></div>
+                                <div class="breakdown-item breakdown-freshness">🕐 ATUALIDADE <span>${s.breakdown.freshness}%</span><div class="mini-bar-bg"><div class="mini-bar-fill mini-bar-pink" style="width:${s.breakdown.freshness}%"></div></div></div>
+                                <div class="breakdown-item breakdown-ratio">📈 PROPORÇÃO <span>${s.breakdown.ratio}%</span><div class="mini-bar-bg"><div class="mini-bar-fill mini-bar-yellow" style="width:${s.breakdown.ratio}%"></div></div></div>
+                            </div>
+                            <div class="info-toggle" onclick="toggleExplanation('${v.id}')">💡 Por que esse score? <span id="arrow-${v.id}">▼</span></div>
+                            <div class="card-explanation" id="explanation-${v.id}">${getExplanation(s, v)}</div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" class="btn-watch">▶ Assistir</a>
+                            <button class="btn-generate" onclick='generateContent(${JSON.stringify(v).replace(/'/g,"&#39;")})'>🤖 Gerar</button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+
+                setTimeout(() => {
+                    const bar = document.getElementById(`bar-${v.id}`);
+                    if (bar) bar.style.width = s.percentage + '%';
+                }, 100);
+            });
+        }
+
+        function getExplanation(s, v) {
+            const hours = Math.max((Date.now() - new Date(v.publishedAt).getTime()) / 36e5, 0.1);
+            const vph = formatNumber(Math.round(v.views / hours));
+            let t = '';
+
+            if (s.level === 'HIGH') t = `🔥 <strong>Este vídeo está BOMBANDO!</strong> ~${vph} views/hora. O YouTube está entregando pesado.`;
+            else if (s.level === 'MEDIUM') t = `⚠️ <strong>Desempenho bom.</strong> ~${vph} views/hora. Precisa de mais interação para viralizar.`;
+            else t = `❌ <strong>Baixa tração.</strong> ~${vph} views/hora. O algoritmo não está impulsionando.`;
+
+            if (s.breakdown.velocity < 20) t += `<br>⚡ <strong>Velocidade baixa:</strong> views chegando devagar. O YouTube prioriza crescimento rápido.`;
+            else if (s.breakdown.velocity >= 70) t += `<br>⚡ <strong>Velocidade alta:</strong> excelente views/hora — algoritmo favorecendo.`;
+
+            if (s.breakdown.engagement < 20) t += `<br>💬 <strong>Engajamento fraco:</strong> poucos likes/comentários para as views.`;
+            else if (s.breakdown.engagement >= 70) t += `<br>💬 <strong>Engajamento forte:</strong> público interagindo muito.`;
+
+            if (s.breakdown.freshness < 10) t += `<br>🕐 <strong>Vídeo antigo:</strong> ${Math.round(hours)}h desde publicação. O boost das 48h acabou.`;
+            else if (s.breakdown.freshness >= 70) t += `<br>🕐 <strong>Recente:</strong> aproveite a janela de 48h do algoritmo!`;
+
+            return t;
+        }
+
+        function toggleExplanation(id) {
+            const el = document.getElementById(`explanation-${id}`);
+            const arrow = document.getElementById(`arrow-${id}`);
+            el.classList.toggle('show');
+            arrow.textContent = el.classList.contains('show') ? '▲' : '▼';
+        }
+
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const btn = document.getElementById('autoRefreshBtn');
+            const timer = document.getElementById('refreshTimer');
+
+            if (autoRefresh) {
+                btn.textContent = '🔄 Auto-atualizar: ON';
+                btn.classList.add('active');
+                startRefreshCountdown();
+                autoRefreshInterval = setInterval(() => {
+                    if (document.getElementById('keywordInput').value.trim()) {
+                        refreshData();
+                    }
+                }, 30000);
+            } else {
+                btn.textContent = '🔄 Auto-atualizar: OFF';
+                btn.classList.remove('active');
+                clearInterval(autoRefreshInterval);
+                clearInterval(refreshCountdown);
+                timer.textContent = '';
+            }
+        }
+
+        function startRefreshCountdown() {
+            let secs = 30;
+            const timer = document.getElementById('refreshTimer');
+            clearInterval(refreshCountdown);
+            refreshCountdown = setInterval(() => {
+                secs--;
+                timer.textContent = `Próxima atualização em ${secs}s`;
+                if (secs <= 0) secs = 30;
+            }, 1000);
+        }
+
+        async function refreshData() {
+            try {
+                const apiKey = getYTKey();
+                const keyword = document.getElementById('keywordInput').value.trim();
+                const searchRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(keyword)}&type=video&maxResults=50&key=${apiKey}&order=relevance`);
+                if (!searchRes.ok) return;
+                const searchData = await searchRes.json();
+                const ids = searchData.items?.map(i => i.id.videoId).filter(Boolean).join(',');
+                if (!ids) return;
+
+                const statsRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${ids}&key=${apiKey}`);
+                if (!statsRes.ok) return;
+                const statsData = await statsRes.json();
+
+                allVideos = statsData.items.map(item => {
+                    const vs = calcViralScore(
+                        parseInt(item.statistics.viewCount || '0'),
+                        parseInt(item.statistics.likeCount || '0'),
+                        parseInt(item.statistics.commentCount || '0'),
+                        item.snippet.publishedAt
+                    );
+                    return {
+                        id: item.id,
+                        title: item.snippet.title,
+                        channel: item.snippet.channelTitle,
+                        publishedAt: item.snippet.publishedAt,
+                        views: parseInt(item.statistics.viewCount || '0'),
+                        likes: parseInt(item.statistics.likeCount || '0'),
+                        comments: parseInt(item.statistics.commentCount || '0'),
+                        thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url,
+                        viralScore: vs
+                    };
+                }).filter(v => v.views > 0);
+
+                allVideos.sort((a, b) => b.viralScore.percentage - a.viralScore.percentage);
+                allVideos = allVideos.slice(0, 20);
+
+                sortBy(currentSort);
+                startRefreshCountdown();
+            } catch {}
+        }
+
+        async function generateContent(video) {
+            const modal = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            
+            if (!getMistralKey()) {
+                modal.classList.add('show');
+                content.innerHTML = '<div class="modal-loading"><div class="modal-loading-icon">🔑</div><div class="modal-loading-text">Chave da Mistral AI ausente. Configure nas "⚙️ APIs".</div></div>';
+                return;
+            }
+
+            modal.classList.add('show');
+            content.innerHTML = '<div class="modal-loading"><div class="modal-loading-icon">🧠</div><div class="modal-loading-text">IA analisando padrões virais...</div></div>';
+
+            try {
+                const apiKey = getMistralKey();
+                const keyword = document.getElementById('keywordInput').value.trim();
+                const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                    body: JSON.stringify({
+                        model: 'mistral-small-latest',
+                        messages: [
+                            { role: 'system', content: 'YouTube algorithm expert. Respond with valid JSON only. Write all content in Brazilian Portuguese.' },
+                            { role: 'user', content: `For a video about "${video.title}" in niche "${keyword}", generate JSON: {"viralHook":"...","shortScript":"...","caption":"...","hashtags":["..."],"titleSuggestion":"...","thumbnailIdea":"...","bestPostingTime":"..."}. All text in Portuguese.` }
+                        ],
+                        temperature: 0.8,
+                        max_tokens: 1000
+                    })
+                });
+
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                let jsonStr = data.choices[0].message.content.trim();
+                if (jsonStr.startsWith('```')) jsonStr = jsonStr.replace(/```json?\n?/g, '').replace(/```$/g, '').trim();
+                renderContent(JSON.parse(jsonStr));
+            } catch { renderContent(getFallbackContent(video)); }
+        }
+
+        function getFallbackContent(v) {
+            const kw = document.getElementById('keywordInput').value.trim();
+            return {
+                viralHook: `Espera... você não vai acreditar no que aconteceu com ${kw}!`,
+                shortScript: `Comece com uma afirmação chocante sobre ${kw}. Crie tensão com 3 pontos rápidos. Termine pedindo comentários.`,
+                caption: `Isso muda tudo sobre ${kw} 🔥 O que acha? Comenta aí! 👇`,
+                hashtags: [`#${kw.replace(/\s+/g,'')}`, '#viral', '#trending', '#fyp', '#youtubeshorts', '#imperdivel', '#mindblown', '#2026', '#conteudo', '#algoritmo'],
+                titleSuggestion: `${kw}: O Segredo Que Ninguém Conta`,
+                thumbnailIdea: `Tela dividida: rosto surpreso + texto "${kw.toUpperCase()}" em vermelho com seta`,
+                bestPostingTime: 'Terça a Quinta, 18h - 21h'
+            };
+        }
+
+        function renderContent(c) {
+            const h = (c.viralHook||'').replace(/'/g,"\\'");
+            const s = (c.shortScript||'').replace(/'/g,"\\'");
+            const cap = (c.caption||'').replace(/'/g,"\\'");
+            const ht = ((c.hashtags||[]).join(' ')).replace(/'/g,"\\'");
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="content-block">
+                    <div class="content-block-header">
+                        <span class="content-block-title" style="color:#ef4444">🎣 GANCHO VIRAL (3s)</span>
+                        <button class="btn-copy" onclick="copyText(this,'${h}')">📋 Copiar</button>
+                    </div>
+                    <p style="color:#fff;font-weight:600">${c.viralHook}</p>
+                </div>
+                <div class="content-block">
+                    <div class="content-block-header">
+                        <span class="content-block-title" style="color:#06b6d4">📝 ROTEIRO (15-30s)</span>
+                        <button class="btn-copy" onclick="copyText(this,'${s}')">📋 Copiar</button>
+                    </div>
+                    <p>${c.shortScript}</p>
+                </div>
+                <div class="content-block">
+                    <div class="content-block-header">
+                        <span class="content-block-title" style="color:#a78bfa">💬 LEGENDA</span>
+                        <button class="btn-copy" onclick="copyText(this,'${cap}')">📋 Copiar</button>
+                    </div>
+                    <p>${c.caption}</p>
+                </div>
+                <div class="content-block">
+                    <div class="content-block-header">
+                        <span class="content-block-title" style="color:#f59e0b"># HASHTAGS</span>
+                        <button class="btn-copy" onclick="copyText(this,'${ht}')">📋 Copiar</button>
+                    </div>
+                    <div class="hashtags">${(c.hashtags||[]).map(t=>`<span class="hashtag">${t}</span>`).join('')}</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="content-block">
+                        <div class="content-block-title" style="color:#ec4899;margin-bottom:0.5rem">🎯 TÍTULO SUGERIDO</div>
+                        <p style="color:#fff;font-weight:600">${c.titleSuggestion}</p>
+                    </div>
+                    <div class="content-block">
+                        <div class="content-block-title" style="color:#10b981;margin-bottom:0.5rem">🖼️ IDEIA DE THUMBNAIL</div>
+                        <p>${c.thumbnailIdea}</p>
+                    </div>
+                </div>
+                <div class="best-time">
+                    <div class="best-time-label">⏰ MELHOR HORÁRIO PARA POSTAR</div>
+                    <div class="best-time-value">${c.bestPostingTime}</div>
+                </div>
+            `;
+        }
+
+        function copyText(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Copiado!';
+                setTimeout(() => btn.textContent = '📋 Copiar', 2000);
+            }).catch(() => { btn.textContent = '✕ Erro'; setTimeout(() => btn.textContent = '📋 Copiar', 2000); });
+        }
+
+        function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+    </script>
+</body>
+</html>
