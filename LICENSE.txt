@@ -1,0 +1,17 @@
+Copyright (c) 2026 Rodrigo Xai
+
+All rights reserved.
+
+This software and associated documentation files (the "Software") may NOT be used for commercial purposes.
+
+You may view, study, and modify this code for personal and educational purposes only.
+
+You are NOT allowed to:
+- Sell this software
+- Use this software in any paid product or service
+- Offer this software as a SaaS
+- Rebrand and redistribute this software
+
+Any commercial use requires explicit written permission from the author.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
