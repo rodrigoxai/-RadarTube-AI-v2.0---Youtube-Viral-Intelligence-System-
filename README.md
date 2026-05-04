@@ -7,6 +7,10 @@
 
 🚀 Live Demo: https://rodrigoxai.github.io/-RadarTube-AI-v2.0---Youtube-Viral-Intelligence-System-/
 
+## 🎥 Demo
+
+![Viral Scan](assets/viral-scan.gif)
+
 
 🌎 Language
 🇺🇸 English
