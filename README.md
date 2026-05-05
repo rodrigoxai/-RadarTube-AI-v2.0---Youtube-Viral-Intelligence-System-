@@ -92,7 +92,7 @@ Made with 💜 by RodrigoXai
 
 _______________________________________________________________________________________________________________________________________
 
->> PT BR <<
+ PT BR
 
 > **Encontre os 20 melhores vídeos do seu nicho e gere conteúdo viral com Inteligência Artificial.**
 
