@@ -89,7 +89,6 @@ Feel free to open Issues and Pull Requests. Any help to improve the algorithm or
 Made with 💜 by RodrigoXai
 
 
-
 _______________________________________________________________________________________________________________________________________
 
  PT BR
