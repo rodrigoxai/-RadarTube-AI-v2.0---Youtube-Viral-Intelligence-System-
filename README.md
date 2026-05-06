@@ -22,7 +22,7 @@
 
 ## 🚀 About the Project
 
-RadarTube AI is an intelligence tool for content creators that analyzes the YouTube algorithm in real time. It doesn’t just show trends — it calculates a **Viral Score** based on growth speed, engagement, freshness, and audience quality, helping you ride the wave before everyone else.
+(RadarTube) AI is an intelligence tool for content creators that analyzes the YouTube algorithm in real time. It doesn’t just show trends — it calculates a **Viral Score** based on growth speed, engagement, freshness, and audience quality, helping you ride the wave before everyone else.
 
 ---
 
