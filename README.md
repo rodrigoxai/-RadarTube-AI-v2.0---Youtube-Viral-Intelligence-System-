@@ -57,7 +57,7 @@
 You will need two free API keys:
 
 - YouTube Data API Key (Google Cloud Console)
-- Mistral API Key (Mistral AI)
+- Mistral API Key (Mistral AI
 
 ### 2. Installation
 
